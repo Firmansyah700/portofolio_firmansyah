@@ -1,0 +1,380 @@
+<!-- index.html -->
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard Portofolio - FIRMANSYAH</title>
+
+    <script src="https://unpkg.com/feather-icons"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style> 
+    /* styles.css - Soft Gradient Premium (UI/UX 2025) */
+    :root{
+      --bg: #f3f6fb;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent-1: #7b61ff; /* Warna Primer (Ungu) */
+      --accent-2: #66d1d1; /* Warna Sekunder (Cyan) */
+      --text: #0f172a;
+      --glass: rgba(255,255,255,0.6);
+      --radius: 16px;
+      --shadow-lg: 0 12px 30px rgba(16,24,40,0.08);
+      --transition: 300ms cubic-bezier(.2,.9,.25,1);
+    }
+
+    *{box-sizing:border-box}
+    html,body,#app{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(135deg,#f7f9ff 0%, #f3f6fb 50%, #eef7f6 100%);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* LAYOUT */
+    .layout{display:flex;min-height:100vh;gap:20px}
+    .sidebar{
+      width:260px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.7));
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow-lg);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      transition:width var(--transition), transform var(--transition);
+    }
+    .sidebar.collapsed{width:80px;transform:translateX(-4px)}
+    .sidebar .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent-1),var(--accent-2));box-shadow:0 6px 18px rgba(99,102,241,0.12)}
+    .brand-text strong{display:block}
+    .brand-text small{color:var(--muted);font-size:12px}
+
+    .collapse-btn{background:transparent;border:0;padding:8px;cursor:pointer;margin-bottom:12px}
+
+    /* NAV */
+    .nav{margin-top:8px;display:flex;flex-direction:column;gap:8px}
+    .nav-item{
+      display:flex;align-items:center;gap:12px;padding:10px;border-radius:12px;border:0;background:transparent;color:var(--text);cursor:pointer;font-weight:600;transition:all var(--transition);
+    }
+    .nav-item i{width:18px;height:18px;opacity:.9}
+    .nav-item span{white-space:nowrap}
+    .nav-item:hover{background:linear-gradient(90deg, rgba(123,97,255,0.08), rgba(102,209,209,0.04));transform:translateX(6px)}
+    .nav-item.active{background:linear-gradient(90deg, rgba(123,97,255,0.12), rgba(102,209,209,0.06));color:var(--accent-1)}
+
+    /* SIDEBAR FOOTER */
+    .sidebar-footer{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+    .ghost{background:rgba(255,255,255,0.8);border:1px solid rgba(15,23,42,0.06);padding:8px;border-radius:10px;cursor:pointer}
+    .version{font-size:12px;color:var(--muted)}
+
+    /* MAIN */
+    .main{flex:1;display:flex;flex-direction:column;gap:18px;padding:25px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;padding:10px 15px;background:#5d45f8c9;border-radius:14px;
+    }
+    .search{display:flex;align-items:center;gap:5px;padding:8px;background:rgba(255,255,255,0.8);border-radius:12px;border:1px solid rgba(15,23,42,0.04);min-width:300px}
+    .search input{border:0;background:transparent;outline:none;width:100%;font-size:14px}
+    .icon-btn{background:transparent;border:0;padding:8px;border-radius:10px;cursor:pointer}
+
+    .profile{display:flex;align-items:center;gap:12px}
+    .profile img{width:40px;height:40px;border-radius:50%;background:#EDE7F6;padding:8px;border:1px solid rgba(15,23,42,0.06)}
+    .profile-name{font-weight:600}
+    .profile .role{font-weight:400;display:block;font-size:13px;color:var(--muted)}
+
+    /* CONTENT */
+    .content-wrapper{display:flex;flex-direction:column;gap:16px}
+    .section-content {
+        margin-bottom: 20px;
+    }
+    .section-content h2 {
+        margin-bottom: 20px;
+        color: var(--accent-1);
+    }
+
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.65));padding:16px;border-radius:14px;box-shadow:var(--shadow-lg);backdrop-filter: blur(6px)}
+    .card-glass{border:1px solid rgba(123,97,255,0.06)}
+    .card small{color:var(--muted);font-weight:600}
+    .stat{font-size:26px;font-weight:700;margin-top:8px}
+    .sub{color:var(--accent-1);margin-top:6px;font-weight:600}
+
+    /* PANEL */
+    .panel{display:flex;gap:16px;align-items:flex-start}
+    .panel-left{flex:1;background:var(--card);padding:20px;border-radius:14px;box-shadow:var(--shadow-lg);min-height:360px}
+    .panel-right{width:400px;background:var(--card);padding:18px;border-radius:14px;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;gap:12px}
+    .panel-header{display:flex;justify-content:space-between;align-items:center}
+    .panel-actions button{background:transparent;border:0;cursor:pointer;padding:8px;border-radius:8px}
+    .muted{color:var(--muted);margin:6px 0 14px}
+
+    /* CHART */
+    .chart-wrap{height:240px}
+    canvas{width:100% !important;height:100% !important}
+
+    /* TABLE */
+    .table-wrap{max-height:260px;overflow:auto;border-radius:8px}
+    .table{width:100%;border-collapse:collapse}
+    .table thead th{text-align:left;padding:10px;color:var(--muted);font-size:13px;position:sticky;top:0;background:var(--card)}
+    .table tbody td{padding:10px;border-top:1px solid rgba(15,23,42,0.04);font-size:14px}
+    .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+    .btn{padding:8px 12px;border-radius:10px;border:0;cursor:pointer}
+    .btn.primary{background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:white;font-weight:700}
+    .btn.ghost{background:transparent;border:1px solid rgba(15,23,42,0.06);color:var(--text)}
+    .btn.ghost:hover{background:rgba(15,23,42,0.03)}
+
+    /* PAGINATION */
+    .pagination{display:flex;gap:8px;justify-content:flex-end;margin-top:8px}
+    .page-btn{padding:6px 10px;border-radius:8px;border:0;background:transparent;cursor:pointer}
+    .page-btn.active{background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#fff}
+
+    /* FOOTER */
+    .footer{text-align:center;color:var(--muted);font-size:13px;padding:8px 0}
+
+    /* RESPONSIVE */
+    @media (max-width:1100px){
+      .grid-3{grid-template-columns:repeat(1,1fr)}
+      .panel{flex-direction:column}
+      .panel-right{width:100%}
+      .sidebar{display:none} 
+      .main{padding:18px; margin-left: 0 !important;}
+    }
+
+    /* DARK MODE */
+    body.dark{
+      --bg: #071226;
+      --card: #1c263c;
+      --text: #e6eef8;
+      --muted: #94a3b8;
+      --glass: rgba(28,38,60,0.6);
+      background: linear-gradient(135deg,#071226 0%, #061126 100%);
+      color:var(--text);
+    }
+    body.dark .sidebar{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
+    body.dark .card, 
+    body.dark .panel-left, 
+    body.dark .panel-right{
+        background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        border:1px solid rgba(255,255,255,0.03)
+    }
+    body.dark .table thead th {
+        background: var(--card);
+    }
+    body.dark .btn.ghost{
+        border: 1px solid rgba(255,255,255,0.1);
+        color: var(--text);
+    }
+    body.dark .btn.ghost:hover{
+        background:rgba(255,255,255,0.05);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app" class="layout">
+        <aside class="sidebar" id="sidebar" aria-label="Sidebar">
+      <div class="sidebar-top">
+        <button id="collapse-btn" class="collapse-btn" aria-label="Toggle sidebar">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="6" fill="currentColor"/></svg>
+        </button>
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="brand-text">
+            <strong>Home Application</strong>
+            <small>Professional Panel</small>
+          </div>
+        </div>
+      </div>
+
+      <nav class="nav" role="navigation" aria-label="Main">
+        <button class="nav-item active" data-section="dashboard"><i data-feather="home"></i><span>Dashboard</span></button>
+        <button class="nav-item" data-section="training"><i data-feather="target"></i><span>Project Training</span></button>
+        <button class="nav-item" data-section="teaching"><i data-feather="book-open"></i><span>Teaching Classes</span></button>
+        <button class="nav-item" data-section="bisnis"><i data-feather="briefcase"></i><span>My Business Company</span></button>
+        <button class="nav-item" data-section="application"><i data-feather="mail"></i><span>Application Status</span></button>
+        <button class="nav-item" data-section="financial"><i data-feather="dollar-sign"></i><span>Financial</span></button>
+        <button class="nav-item" data-section="progress"><i data-feather="trending-up"></i><span>Progress</span></button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="toggle-dark" class="ghost" aria-pressed="false"><i data-feather="moon"></i><span>Dark Mode</span></button>
+                <a href="index.html" class="nav-item" style="margin-top: 10px; background: rgba(255, 0, 0, 0.1); color: #ff0000; border: 1px solid rgba(255, 0, 0, 0.1);"><i data-feather="log-out"></i><span>Log Out (Ke Portofolio)</span></a>
+        <small class="version">v1.0</small>
+      </div>
+    </aside>
+
+        <main class="main" id="main">
+            <header class="topbar">
+        <div class="left">
+          <div class="search">
+            <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <input id="search" placeholder="Cari data di dashboard..." aria-label="Search" />
+          </div>
+        </div>
+
+        <div class="right">
+          <button class="icon-btn" title="Notifications" aria-label="Notifications"><i data-feather="bell"></i></button>
+          <div class="profile" title="Profile">
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect width='100%' height='100%' fill='%23EDE7F6'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='28' fill='%23666'>F</text></svg>" alt="User" />
+            <div class="profile-name">Firmansyah <span class="role">Tax Specialist</span></div>
+          </div>
+        </div>
+      </header>
+
+            <section class="content-wrapper" id="content-wrapper">
+        
+                <div class="section-content active" data-id="dashboard">
+          <h2>Dashboard Ringkasan Profesional</h2>
+          <div class="grid-3">
+            <div class="card card-glass">
+              <small>Total Training Hours</small>
+              <div class="stat">150+ Jam</div>
+              <div class="sub" style="color:#28a745;">+3 Proyek Selesai</div>
+            </div>
+
+            <div class="card card-glass">
+              <small>Certification Score Average</small>
+              <div class="stat">92.5%</div>
+              <div class="sub" style="color:#ffc107;">Brevet A & B Target</div>
+            </div>
+
+            <div class="card card-glass">
+              <small>Application Status</small>
+              <div class="stat">2 Active</div>
+              <div class="sub">Lihat Detail di Menu No.5</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-left">
+              <div class="panel-header">
+                <h3>Overview Progress Training</h3>
+                <div class="panel-actions">
+                  <button id="refresh" title="Refresh"><i data-feather="refresh-cw"></i></button>
+                </div>
+              </div>
+              <p class="muted">Tingkat penguasaan skill dari waktu ke waktu.</p>
+              <div class="chart-wrap">
+                <canvas id="overviewChart" aria-label="Overview chart" role="img"></canvas>
+              </div>
+            </div>
+
+            <div class="panel-right">
+              <h4>Aplikasi Terbaru</h4>
+              <div class="table-wrap">
+                <table class="table">
+                  <thead>
+                    <tr><th>Perusahaan</th><th>Posisi</th><th>Status</th></tr>
+                  </thead>
+                  <tbody id="application-table">
+                        <tr><td>PT. Mega Logistik</td><td>Tax Manager</td><td>Pending</td></tr>
+                        <tr><td>Global Services Inc.</td><td>Senior Tax Specialist</td><td>Active</td></tr>
+                        <tr><td>Tech Innovators Group</td><td>VAT Officer</td><td>Rejected</td></tr>
+                        <tr><td>PT. Seacon Terminal</td><td>Finance Officer</td><td>Active</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="actions">
+                <button class="btn primary" id="export-applications">Export Data</button>
+                <a href="#application" class="btn ghost" onclick="document.querySelector('.nav-item[data-section=\'application\']').click();">Lihat Semua</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+                <div class="section-content" data-id="training" style="display:none;">
+          <h2>Project Training</h2>
+          <p>Daftar proyek dan studi kasus yang diselesaikan untuk menguasai keahlian teknis.</p>
+            <div class="card" style="margin-top:20px;">
+                <h4>Proyek 1: Otomasi Pelaporan PPN E-Faktur</h4>
+                <p class="muted">Mengembangkan script Python dan Excel Macro untuk otomatisasi rekapitulasi data faktur pajak dari database/file CSV, mengurangi waktu penyusunan SPT bulanan sebesar 40% (Simulasi).</p>
+                <span class="sub" style="color:#007bff;"><i data-feather="check-circle"></i> Selesai: Des 2025</span>
+            </div>
+            <div class="card" style="margin-top:20px;">
+                <h4>Proyek 2: Analisis Laba Rugi Komparatif</h4>
+                <p class="muted">Membuat dashboard interaktif menggunakan MS Excel dan Power Query untuk memvisualisasikan tren biaya dan pendapatan (Simulasi).</p>
+                <span class="sub" style="color:#007bff;"><i data-feather="check-circle"></i> Selesai: Nov 2025</span>
+            </div>
+        </div>
+
+                <div class="section-content" data-id="teaching" style="display:none;">
+          <h2>Project Teaching Classes</h2>
+          <p>Materi dan modul yang pernah disusun atau dibawakan dalam pelatihan internal/eksternal.</p>
+            <ul style="list-style-type:disc; padding-left: 20px;">
+                <li>**Workshop CoreTax System (2024)**: Fokus pada migrasi data dan kepatuhan VAT pasca implementasi CoreTax.</li>
+                <li>**Modul Dasar Akuntansi Keuangan (2023)**: Penyusunan dan pengajaran dasar-dasar siklus akuntansi untuk staff non-Finance.</li>
+            </ul>
+        </div>
+
+                <div class="section-content" data-id="bisnis" style="display:none;">
+          <h2>My Business Company</h2>
+          <p>Profil singkat perusahaan/inisiatif bisnis yang Anda jalankan/miliki (Simulasi).</p>
+            <blockquote style="border-left: 4px solid var(--accent-1); padding: 10px 15px; background: rgba(123,97,255,0.04); border-radius: 4px; margin-top: 15px;">
+                **Firma Konsultasi Pajak Sederhana (Paruh Waktu)**: Memberikan konsultasi virtual *one-on-one* untuk UMKM mengenai kepatuhan pajak bulanan dan tahunan (Simulasi).
+            </blockquote>
+        </div>
+
+                <div class="section-content" data-id="application" style="display:none;">
+          <h2>Application Status</h2>
+          <p>Status terbaru dari aplikasi lamaran kerja (Simulasi).</p>
+            
+            <div class="grid-3" style="margin-top:20px;">
+                <div class="card">
+                    <h4>PT. Mega Logistik</h4>
+                    <p class="muted">Posisi: Tax & Finance Manager</p>
+                    <span style="color: #ff9800; font-weight: bold;">PENDING REVIEW</span>
+                </div>
+
+                <div class="card">
+                    <h4>Global Services Inc.</h4>
+                    <p class="muted">Posisi: Senior Tax Specialist</p>
+                    <span style="color: #4caf50; font-weight: bold;">INTERVIEW SCHEDULED</span>
+                </div>
+
+                <div class="card">
+                    <h4>Tech Innovators Group</h4>
+                    <p class="muted">Posisi: VAT Compliance Officer</p>
+                    <span style="color: #f44336; font-weight: bold;">APPLICATION REJECTED</span>
+                </div>
+            </div>
+
+        </div>
+
+                <div class="section-content" data-id="financial" style="display:none;">
+          <h2>Financial (Proyek Akuntansi & Pajak)</h2>
+          <p>Simulasi Laporan Kepatuhan Pajak dan Analisis Risiko Keuangan yang pernah Anda lakukan.</p>
+            <div class="panel">
+                <div class="panel-left" style="flex:1; width:100%">
+                    <h4 style="margin-top:0;">Analisis Risiko Kepatuhan PPN (Q3 2025)</h4>
+                    <p class="muted">Mengidentifikasi potensi risiko denda sebesar **Rp 50 Juta** dan menerapkan mitigasi yang menghasilkan penghematan biaya administrasi. </p>
+                    <div style="height: 200px; background: #eee; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        [Placeholder: Grafik Analisis Varians Kepatuhan PPN]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+                <div class="section-content" data-id="progress" style="display:none;">
+          <h2>Progress & Target</h2>
+          <p>Pencapaian besar dan target yang akan dicapai dalam 6-12 bulan ke depan.</p>
+            <ul style="list-style-type:disc; padding-left: 20px;">
+                <li>**Q4 2025 Goal (Selesai)**: Meluncurkan Portofolio Digital dan menyelesaikan 5 sertifikasi teknis.</li>
+                <li>**Q1 2026 Goal**: Mendapatkan Sertifikasi **Brevet A & B** untuk memperkuat legalitas dan kapabilitas konsultansi.</li>
+                <li>**Q2 2026 Goal**: Menguasai minimal 2 *tools* Business Intelligence (e.g., Power BI/Tableau) untuk visualisasi data keuangan.</li>
+            </ul>
+        </div>
+      </section>
+
+      <footer class="footer">© <span id="year"></span> Home-App FDProduction — All rights reserved</footer>
+    </main>
+  </div>
+
+  <script src="app.js" defer></script>
+  <script>feather.replace();</script>
+</body>
+</html>
